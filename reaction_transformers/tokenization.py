@@ -274,3 +274,14 @@ def process_reaction(rxn):
     joined_precursors = ".".join(sorted(precursors))
     joined_products = ".".join(sorted(products))
     return f"{joined_precursors}>>{joined_products}"
+
+def smi_tokenizer(smi):
+    """
+    Tokenize a SMILES molecule or reaction
+    """
+    import re
+    pattern =  "(\%\([0-9]{3}\)|\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|\||\(|\)|\.|\^|=|#|-|\+|\\|\/|:|~|@|\?|>>?|\*|\$|\%[0-9]{2}|[0-9])" #=O?|
+    regex = re.compile(pattern)
+    tokens = [token for token in regex.findall(smi)]
+    assert smi == ''.join(tokens)
+    return ' '.join(tokens)
