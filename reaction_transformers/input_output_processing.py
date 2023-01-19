@@ -2,6 +2,7 @@ from sklearn.metrics import confusion_matrix, r2_score
 import json
 import time
 import math
+import numpy as np
 
 def split_data(df, n):
     """
@@ -119,7 +120,6 @@ def epochs_calc_r2(df_test, model_dir, checkpoit_multiple=22, epoch_offset = 0, 
     r2_scores = {k:v for k,v in zip(epochs, r2_scores)}
     return r2_scores
 
-#Needs function needs to be refactored
 def r2score_stats(r2_scores_all):
     """
     Combine results from each nested cross validation split and calculate std for the results plot
@@ -128,12 +128,14 @@ def r2score_stats(r2_scores_all):
     r2_scores_all_min = []
     r2_scores_all_max = []
     r2_scores_all_std = []
-    for v0,v1,v2,v3,v4 in zip(list(r2_scores_all["ncv_0"].values()), list(r2_scores_all["ncv_1"].values()), 
-                               list(r2_scores_all["ncv_2"].values()), list(r2_scores_all["ncv_3"].values()), list(r2_scores_all["ncv_4"].values())):
-        r2_scores_all_avg.append(np.mean([v0,v1,v2,v3,v4]))
-        r2_scores_all_min.append(np.min([v0,v1,v2,v3,v4]))
-        r2_scores_all_max.append(np.max([v0,v1,v2,v3,v4]))
-        r2_scores_all_std.append(np.std([v0,v1,v2,v3,v4]))
+
+    for i in range(len(list(r2_scores_all.values())[0])):
+        all_scores = [r2_scores_all[key][list(r2_scores_all[key].keys())[i]] for key in r2_scores_all]
+        r2_scores_all_avg.append(np.mean(all_scores))
+        r2_scores_all_min.append(np.min(all_scores))
+        r2_scores_all_max.append(np.max(all_scores))
+        r2_scores_all_std.append(np.std(all_scores))
+
     return r2_scores_all_avg, r2_scores_all_min, r2_scores_all_max, r2_scores_all_std
 
 def save_ncv_testresults(df_photoredox, col_interest, num_splits, base_model):
