@@ -3,6 +3,14 @@ import json
 import time
 import math
 import numpy as np
+import pandas as pd
+import torch
+
+import sys
+sys.path.insert(0, "../../BEE")
+sys.path.insert(0, "../reaction_transformers")
+from reaction_transformers.models import SmilesLanguageModelingModel
+from reaction_transformers.models import SmilesClassificationModel
 
 def split_data(df, n):
     """
