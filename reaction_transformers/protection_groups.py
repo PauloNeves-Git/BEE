@@ -115,6 +115,12 @@ def apply_deprotections(
 
     smiles_list = df["product_smiles"].tolist()
     total = len(smiles_list)
+    if total == 0:
+        updated_df = df.copy()
+        updated_df[f"{stage}_deprotected_smiles"] = []
+        updated_df[f"{stage}_deprotection_id"] = []
+        return updated_df
+
     deprotected: List[str | None] = [None] * total
     deprotection_ids: List[str | None] = [None] * total
 
